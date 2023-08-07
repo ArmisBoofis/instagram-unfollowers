@@ -84,10 +84,25 @@ def main(stdsrc):
             if h < len(snobbers):
                 result_pad.addstr(h, 80, snobbers[h], RED)
 
+    # We copy the result inside a text file, so that the user can copy the names...
+    with open(path.join(dir_path, 'results.txt'), 'w') as file:
+        file.write('Normal :\n\n') # We first write the normal people
+        file.writelines('\n'.join(normal))
+
+        file.write('\n\nFans :\n\n') # Then the fans
+        file.writelines('\n'.join(fans))
+
+        file.write('\n\nSnobbers :\n\n') # And finally the snobbers
+        file.writelines('\n'.join(snobbers))
+
     # Scrolling effect inside the pad
     current_key, inner_y = curses.KEY_MIN, 0
 
     while current_key != 10:
+        # We refresh the screen
+        result_pad.refresh(inner_y, 0, 4, 0, 20, 150)
+        stdsrc.refresh()
+
         # We wait for the user to enter something
         current_key = stdsrc.getch()
 
@@ -97,9 +112,6 @@ def main(stdsrc):
         
         elif current_key == 456:
             inner_y = min(height, inner_y + 5)
-
-        result_pad.refresh(inner_y, 0, 4, 0, 20, 150)
-        stdsrc.refresh()
 
 # <stdsrc> variable is passed to <main> function here
 wrapper(main)
